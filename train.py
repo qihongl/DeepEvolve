@@ -10,7 +10,7 @@ and also on
 
 #import keras
 # import tensorflow.keras as keras
-from tensorflow.keras import backend as k
+from tensorflow.keras import backend as K
 from tensorflow.keras.datasets import mnist, cifar10
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, Flatten
