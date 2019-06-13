@@ -1,21 +1,20 @@
 """Entry point to evolving the neural network. Start here."""
 from __future__ import print_function
-
 from evolver import Evolver
-
 from tqdm import tqdm
 
 import logging
 
-import sys
+# import sys
 
 # Setup logging.
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     datefmt='%m/%d/%Y %I:%M:%S %p',
-    level=logging.INFO#,
-    #filename='log.txt'
+    level=logging.INFO  # ,
+    # filename='log.txt'
 )
+
 
 def train_genomes(genomes, dataset):
     """Train each genome.
@@ -32,8 +31,9 @@ def train_genomes(genomes, dataset):
     for genome in genomes:
         genome.train(dataset)
         pbar.update(1)
-    
+
     pbar.close()
+
 
 def get_average_accuracy(genomes):
     """Get the average accuracy for a group of networks/genomes.
@@ -52,6 +52,7 @@ def get_average_accuracy(genomes):
 
     return total_accuracy / len(genomes)
 
+
 def generate(generations, population, all_possible_genes, dataset):
     """Generate a network with the genetic algorithm.
 
@@ -62,19 +63,20 @@ def generate(generations, population, all_possible_genes, dataset):
         dataset (str): Dataset to use for training/evaluating
 
     """
-    logging.info("***generate(generations, population, all_possible_genes, dataset)***")
-    
+    logging.info(
+        "***generate(generations, population, all_possible_genes, dataset)***")
+
     evolver = Evolver(all_possible_genes)
-    
+
     genomes = evolver.create_population(population)
 
     # Evolve the generation.
-    for i in range( generations ):
+    for i in range(generations):
 
         logging.info("***Now in generation %d of %d***" % (i + 1, generations))
 
         print_genomes(genomes)
-        
+
         # Train and get accuracy for networks/genomes.
         train_genomes(genomes, dataset)
 
@@ -83,7 +85,7 @@ def generate(generations, population, all_possible_genes, dataset):
 
         # Print out the average accuracy each generation.
         logging.info("Generation average: %.2f%%" % (average_accuracy * 100))
-        logging.info('-'*80) #-----------
+        logging.info('-'*80)  # -----------
 
         # Evolve, except on the last iteration.
         if i != generations - 1:
@@ -99,6 +101,7 @@ def generate(generations, population, all_possible_genes, dataset):
     #save_path = saver.save(sess, '/output/model.ckpt')
     #print("Model saved in file: %s" % save_path)
 
+
 def print_genomes(genomes):
     """Print a list of genomes.
 
@@ -111,14 +114,15 @@ def print_genomes(genomes):
     for genome in genomes:
         genome.print_genome()
 
+
 def main():
     """Evolve a genome."""
-    population = 30 # Number of networks/genomes in each generation.
-    #we only need to train the new ones....
-    
+    population = 30  # Number of networks/genomes in each generation.
+    # we only need to train the new ones....
+
     ds = 4
 
-    if(   ds == 1):
+    if(ds == 1):
         dataset = 'mnist_mlp'
     elif (ds == 2):
         dataset = 'mnist_cnn'
@@ -132,57 +136,59 @@ def main():
     print("***Dataset:", dataset)
 
     if dataset == 'mnist_cnn':
-        generations = 8 # Number of times to evolve the population.
+        generations = 8  # Number of times to evolve the population.
         all_possible_genes = {
             'nb_neurons': [16, 32, 64, 128],
-            'nb_layers':  [1, 2, 3, 4 ,5],
-            'activation': ['relu', 'elu', 'tanh', 'sigmoid', 'hard_sigmoid','softplus','linear'],
-            'optimizer':  ['rmsprop', 'adam', 'sgd', 'adagrad','adadelta', 'adamax', 'nadam']
+            'nb_layers':  [1, 2, 3, 4, 5],
+            'activation': ['relu', 'elu', 'tanh', 'sigmoid', 'hard_sigmoid', 'softplus', 'linear'],
+            'optimizer':  ['rmsprop', 'adam', 'sgd', 'adagrad', 'adadelta', 'adamax', 'nadam']
         }
     elif dataset == 'mnist_mlp':
-        generations = 8 # Number of times to evolve the population.
+        generations = 8  # Number of times to evolve the population.
         all_possible_genes = {
-            'nb_neurons': [64, 128], #, 256, 512, 768, 1024],
+            'nb_neurons': [64, 128],  # , 256, 512, 768, 1024],
             'nb_layers':  [1, 2, 3, 4, 5],
-            'activation': ['relu', 'elu', 'tanh', 'sigmoid', 'hard_sigmoid','softplus','linear'],
-            'optimizer':  ['rmsprop', 'adam', 'sgd', 'adagrad','adadelta', 'adamax', 'nadam']
+            'activation': ['relu', 'elu', 'tanh', 'sigmoid', 'hard_sigmoid', 'softplus', 'linear'],
+            'optimizer':  ['rmsprop', 'adam', 'sgd', 'adagrad', 'adadelta', 'adamax', 'nadam']
         }
     elif dataset == 'cifar10_mlp':
-        generations = 8 # Number of times to evolve the population.
+        generations = 8  # Number of times to evolve the population.
         all_possible_genes = {
             'nb_neurons': [64, 128, 256, 512, 768, 1024],
             'nb_layers':  [1, 2, 3, 4, 5],
-            'activation': ['relu', 'elu', 'tanh', 'sigmoid', 'hard_sigmoid','softplus','linear'],
-            'optimizer':  ['rmsprop', 'adam', 'sgd', 'adagrad','adadelta', 'adamax', 'nadam']
+            'activation': ['relu', 'elu', 'tanh', 'sigmoid', 'hard_sigmoid', 'softplus', 'linear'],
+            'optimizer':  ['rmsprop', 'adam', 'sgd', 'adagrad', 'adadelta', 'adamax', 'nadam']
         }
     elif dataset == 'cifar10_cnn':
-        generations = 8 # Number of times to evolve the population.
+        generations = 8  # Number of times to evolve the population.
         all_possible_genes = {
             'nb_neurons': [16, 32, 64, 128],
             'nb_layers':  [1, 2, 3, 4, 5],
-            'activation': ['relu', 'elu', 'tanh', 'sigmoid', 'hard_sigmoid','softplus','linear'],
-            'optimizer':  ['rmsprop', 'adam', 'sgd', 'adagrad','adadelta', 'adamax', 'nadam']
+            'activation': ['relu', 'elu', 'tanh', 'sigmoid', 'hard_sigmoid', 'softplus', 'linear'],
+            'optimizer':  ['rmsprop', 'adam', 'sgd', 'adagrad', 'adadelta', 'adamax', 'nadam']
         }
     else:
-        generations = 8 # Number of times to evolve the population.
+        generations = 8  # Number of times to evolve the population.
         all_possible_genes = {
             'nb_neurons': [64, 128, 256, 512, 768, 1024],
             'nb_layers':  [1, 2, 3, 4, 5],
-            'activation': ['relu', 'elu', 'tanh', 'sigmoid', 'hard_sigmoid','softplus','linear'],
-            'optimizer':  ['rmsprop', 'adam', 'sgd', 'adagrad','adadelta', 'adamax', 'nadam']
+            'activation': ['relu', 'elu', 'tanh', 'sigmoid', 'hard_sigmoid', 'softplus', 'linear'],
+            'optimizer':  ['rmsprop', 'adam', 'sgd', 'adagrad', 'adadelta', 'adamax', 'nadam']
         }
 
     # replace nb_neurons with 1 unique value for each layer
     # 6th value reserved for dense layer
     nb_neurons = all_possible_genes['nb_neurons']
-    for i in range(1,7):
-      all_possible_genes['nb_neurons_' + str(i)] = nb_neurons
+    for i in range(1, 7):
+        all_possible_genes['nb_neurons_' + str(i)] = nb_neurons
     # remove old value from dict
     all_possible_genes.pop('nb_neurons')
-            
-    print("***Evolving for %d generations with population size = %d***" % (generations, population))
+
+    print("***Evolving for %d generations with population size = %d***" %
+          (generations, population))
 
     generate(generations, population, all_possible_genes, dataset)
+
 
 if __name__ == '__main__':
     main()

@@ -8,9 +8,10 @@ from tqdm import tqdm
 logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
     datefmt='%m/%d/%Y %I:%M:%S %p',
-    level=logging.INFO#,
-    #filename='brute-log.txt'
+    level=logging.INFO  # ,
+    # filename='brute-log.txt'
 )
+
 
 def train_genomes(genomes, dataset):
     """Train each network.
@@ -20,7 +21,7 @@ def train_genomes(genomes, dataset):
         dataset (str): Dataset to use for training/evaluating
     """
     pbar = tqdm(total=len(genomes))
-    
+
     for genome in genomes:
         genome.train(dataset)
         genome.print_genome()
@@ -33,6 +34,7 @@ def train_genomes(genomes, dataset):
     # Print out the top 5 networks.
     print_genomes(genomes[:5])
 
+
 def print_genomes(genomes):
     """Print a list of networks.
 
@@ -43,6 +45,7 @@ def print_genomes(genomes):
     logging.info('-'*80)
     for genome in genomes:
         genome.print_genome()
+
 
 def generate_genome_list(all_possible_genes):
     """Generate a list of all possible networks.
@@ -77,6 +80,7 @@ def generate_genome_list(all_possible_genes):
 
     return genomes
 
+
 def main():
     """Brute force test every network."""
     dataset = 'cifar10_cnn'
@@ -84,7 +88,7 @@ def main():
     all_possible_genes = {
         'nb_neurons': [16, 32, 64, 128],
         'nb_layers':  [1, 2, 3, 4, 5],
-        'activation': ['relu', 'elu', 'tanh', 'sigmoid', 'hard_sigmoid','softplus','linear'],
+        'activation': ['relu', 'elu', 'tanh', 'sigmoid', 'hard_sigmoid', 'softplus', 'linear'],
         'optimizer':  ['rmsprop', 'adam', 'sgd', 'adagrad', 'adadelta', 'adamax', 'nadam'],
     }
 
@@ -93,6 +97,7 @@ def main():
     genomes = generate_genome_list(all_possible_genes)
 
     train_genomes(genomes, dataset)
+
 
 if __name__ == '__main__':
     main()
